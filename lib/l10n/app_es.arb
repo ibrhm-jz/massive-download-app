@@ -1,0 +1,10 @@
+{
+  "save": "Guardar",
+  "continueBtn": "Continuar",
+  "cancel": "Cancelar",
+  "copy": "Copiar",
+  "share": "Compartir",
+  "operationFailureMessage":"Lo sentimos, ocurrió un error.",
+  "deleteButton": "Eliminar",
+  "rename": "Renombrar"
+}
