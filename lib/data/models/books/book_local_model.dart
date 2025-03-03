@@ -36,9 +36,16 @@ class BookLocalModel {
     this.title,
   });
   String getCoverBook() {
+    if (coverI == null) {
+      return "https://static.wikia.nocookie.net/gijoe/images/b/bf/Default_book_cover.jpg/revision/latest?cb=20240508080922";
+    }
     return "https://covers.openlibrary.org/b/id/$coverI-L.jpg";
   }
+
   String getAuthorProfileBook(String author) {
+    if (author.isEmpty) {
+      return "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+    }
     return "https://covers.openlibrary.org/a/olid/$author-M.jpg";
   }
 }

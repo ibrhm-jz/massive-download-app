@@ -11,6 +11,7 @@
   "numberOfBooks" : "Numero de libros a descargar",
   "infoLibrary":"Informacion Bibliotecaria",
   "doYouWantDelete":"¿Desea eliminar los registros?",
+  "doYouWantDeleteRegister":"¿Desea eliminar este registro?",
   "deleteRecords" :"Borrar registros",
   "downloadProgress": "Descargando...",
   "downloadComplete" : "Descarga completada con éxito",

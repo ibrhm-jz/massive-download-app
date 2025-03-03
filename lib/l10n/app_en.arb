@@ -11,6 +11,7 @@
   "numberOfBooks" : "Number of books to download",
   "infoLibrary":"Library Information",
   "doYouWantDelete":"Do you want to delete the logs?",
+  "doYouWantDeleteRegister":"Do you want to delete the record?",
   "deleteRecords" :"Delete records",
   "downloadProgress": "Downloading...",
   "downloadComplete" : "Download completed successfully",

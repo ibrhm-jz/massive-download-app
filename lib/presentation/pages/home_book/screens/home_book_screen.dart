@@ -154,78 +154,103 @@ class _HomeBookScreenState extends State<HomeBookScreen>
           return Center(child: Text(L10n.of(context).noBooks));
         }
         return Expanded(
-          child: GridView.builder(
-            controller: _scrollController,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              childAspectRatio: MediaQuery.of(context).size.width /
-                  (MediaQuery.of(context).size.height / 1),
-            ),
-            itemCount: books.length,
-            itemBuilder: (context, index) {
-              final book = books[index];
-              return Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+          child: Stack(
+            children: [
+              GridView.builder(
+                controller: _scrollController,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: MediaQuery.of(context).size.width /
+                      (MediaQuery.of(context).size.height / 1),
+                ),
+                itemCount: books.length,
+                itemBuilder: (context, index) {
+                  final book = books[index];
+                  return Stack(
                     children: [
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxHeight: 200,
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: book.getCoverBook(),
-                          placeholder: (context, url) => const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          fit: BoxFit.scaleDown,
-                        ),
-                      ),
-                      Text(
-                        book.title ?? "",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              maxHeight: 200,
                             ),
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
+                            child: CachedNetworkImage(
+                              imageUrl: book.getCoverBook(),
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Image.asset('assets/images/book_cover.webp'),
+                              fit: BoxFit.scaleDown,
+                            ),
+                          ),
+                          Text(
+                            book.title ?? "",
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          DefaultButton(
+                              text: L10n.of(context).seeMore,
+                              onPressed: () {
+                                AutoRouter.of(context).push(
+                                  DetailsRoute(identificator: book.id!),
+                                );
+                              })
+                        ],
                       ),
-                      DefaultButton(
-                          text: L10n.of(context).seeMore,
-                          onPressed: () {
-                            AutoRouter.of(context).push(
-                              DetailsRoute(identificator: book.id!),
+                      Positioned(
+                        right: 0,
+                        top: 8,
+                        child: IconButton(
+                          onPressed: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (context) => DefaultConfirmModal(
+                                type: DefaultConfirmModalType.deleted,
+                                onPressed: () async {
+                                  await bookProvider.deleteBook(book);
+                                  if (context.mounted) {
+                                    AutoRouter.of(context)
+                                        .replaceAll([const WelcomeRoute()]);
+                                  }
+                                },
+                                titleText:
+                                    L10n.of(context).doYouWantDeleteRegister,
+                              ),
                             );
-                          })
-                    ],
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 8,
-                    child: IconButton(
-                      onPressed: () async {
-                        await bookProvider.deleteBook(book);
-                      },
-                      icon: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.6),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: const Icon(
-                          Icons.close,
-                          color: AppColors.neutral100,
+                          },
+                          icon: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: AppColors.neutral100,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              );
-            },
+                    ],
+                  );
+                },
+              ),
+              if (bookProvider.loadingMore && !bookProvider.loading)
+                Positioned(
+                  bottom: 2,
+                  left: MediaQuery.of(context).size.width / 2 - 50,
+                  child: const CircularProgressIndicator(),
+                ),
+            ],
           ),
         );
       },
