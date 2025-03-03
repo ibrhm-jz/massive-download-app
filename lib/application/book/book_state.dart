@@ -56,3 +56,10 @@ class BookSuccess extends BookState {
   @override
   List<Object> get props => [message];
 }
+class BookPaused extends BookState {
+  final bool paused;
+  BookPaused(this.paused);
+
+  @override
+  List<Object> get props => [paused];
+}

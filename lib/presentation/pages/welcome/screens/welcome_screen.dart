@@ -58,8 +58,12 @@ class WelcomeScreen extends StatelessWidget {
   Widget _actions(BuildContext context) {
     return DefaultButton(
         text: L10n.of(context).continueBtn,
-        onPressed: () {
-          AutoRouter.of(context).push(const HomeBookRoute());
+        onPressed: () async {
+          final bookProvider = context.read<BookProvider>();
+          await bookProvider.clearBooks();
+          if (context.mounted) {
+            AutoRouter.of(context).push(const HomeBookRoute());
+          }
         });
   }
 }

@@ -21,5 +21,6 @@
   "title":"Title",
   "firstYearPublication":"First year of publication",
   "editionNumber":"Edition No.",
-  "author":"Author/Authors"
+  "author":"Author/Authors",
+  "info":"Information"
 }

@@ -13,45 +13,34 @@ void main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
-  // final database =
-  //     await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-  // final dao = database.bookDao;
-  // final person = BookLocalModel(
-  //     author: "Ibraham", coverUrl: "", title: "Mi titulo", id: 3);
-  // await dao.insertBook(person);
-
-  // final people = await dao.getAllBooks();
-  // for (var p in people) {
-  //   print("ID: ${p.id}, Name: ${p.author}, Age: ${p.title}");
-  // }
-  runApp(MyApp(
-   
-  ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key, });
+  MyApp({
+    super.key,
+  });
   final appRouter = AppRouter();
-  //final BookDataSource dao;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     initializeDateFormatting('en', null);
 
     return MultiProvider(
-        providers: [
-            ChangeNotifierProvider(create: (_) => getIt<BookProvider>()),
-        ],
-        builder: (context, _) {
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: L10n.localizationsDelegates,
-            supportedLocales: L10n.supportedLocales,
-            title: 'Flutter Demo',
-            theme: ThemeClass.darkTheme,
-            themeMode: ThemeMode.dark,
-            routerConfig: appRouter.config(),
-          );
-        });
+      providers: [
+        ChangeNotifierProvider(create: (_) => getIt<BookProvider>()),
+      ],
+      builder: (context, _) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
+          title: 'Flutter Demo',
+          theme: ThemeClass.darkTheme,
+          themeMode: ThemeMode.dark,
+          routerConfig: appRouter.config(),
+        );
+      },
+    );
   }
 }

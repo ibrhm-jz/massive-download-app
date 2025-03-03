@@ -50,156 +50,185 @@ class _HomeBookScreenState extends State<HomeBookScreen>
       appBar: AppBar(
         title: Text(L10n.of(context).infoLibrary),
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) async {
-              if (value == 'clear') {
-                final bookProvider = context.read<BookProvider>();
-                await showDialog(
-                  context: context,
-                  builder: (context) => DefaultConfirmModal(
-                    type: DefaultConfirmModalType.deleted,
-                    onPressed: () async {
-                      await bookProvider.clearBooks();
-                      if (context.mounted) {
-                        AutoRouter.of(context)
-                            .replaceAll([const WelcomeRoute()]);
-                      }
-                    },
-                    titleText: L10n.of(context).doYouWantDelete,
-                  ),
-                );
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'clear',
-                child: Text(L10n.of(context).deleteRecords),
-              ),
-            ],
-          ),
+          _actionsMenu(context),
         ],
       ),
       body: DefaultPadding(
         child: Column(
           children: [
-            BlocBuilder<BookCubit, BookState>(
-              builder: (context, state) {
-                if (state is BookLoading) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.download),
-                        LinearProgressIndicator(value: (state.progress) / 100),
-                        const SizedBox(height: 10),
-                        Text(
-                          '${L10n.of(context).downloadProgress}${(state.progress).toStringAsFixed(1)}%',
-                        ),
-                      ],
-                    ),
-                  );
-                } else if (state is BookSuccess) {
-                  return Center(child: Text(L10n.of(context).downloadComplete));
-                } else if (state is BookError) {
-                  return Center(
-                      child: Text('${L10n.of(context).error}${state.message}'));
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-            Consumer<BookProvider>(
-              builder: (context, bookProvider, child) {
-                if (!bookProvider.isInitialized) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                List<BookLocalModel> books = bookProvider.books;
-                if (books.isEmpty) {
-                  return Center(child: Text(L10n.of(context).noBooks));
-                }
-                return Expanded(
-                  child: GridView.builder(
-                    controller: _scrollController,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: MediaQuery.of(context).size.width /
-                          (MediaQuery.of(context).size.height / 1),
-                    ),
-                    itemCount: books.length,
-                    itemBuilder: (context, index) {
-                      final book = books[index];
-                      return Stack(
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxHeight: 200,
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: book.getCoverBook(),
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                  fit: BoxFit.scaleDown,
-                                ),
-                              ),
-                              Text(
-                                book.title ?? "",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              DefaultButton(
-                                  text: L10n.of(context).seeMore,
-                                  onPressed: () {
-                                    AutoRouter.of(context).push(
-                                      DetailsRoute(identificator: book.id!),
-                                    );
-                                  })
-                            ],
-                          ),
-                          Positioned(
-                            right: 0,
-                            top: 8,
-                            child: IconButton(
-                              onPressed: () async {
-                                await bookProvider.deleteBook(book);
-                              },
-                              icon: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.6),
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                child: const Icon(
-                                  Icons.close,
-                                  color: AppColors.neutral100,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+            _loadingDownload(context),
+            _bookLibrary(context),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _actionsMenu(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (value) async {
+        if (value == 'clear') {
+          final bookProvider = context.read<BookProvider>();
+          await showDialog(
+            context: context,
+            builder: (context) => DefaultConfirmModal(
+              type: DefaultConfirmModalType.deleted,
+              onPressed: () async {
+                await bookProvider.clearBooks();
+                if (context.mounted) {
+                  AutoRouter.of(context).replaceAll([const WelcomeRoute()]);
+                }
+              },
+              titleText: L10n.of(context).doYouWantDelete,
+            ),
+          );
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'clear',
+          child: Text(L10n.of(context).deleteRecords),
+        ),
+      ],
+    );
+  }
+
+  Widget _loadingDownload(BuildContext context) {
+    return BlocBuilder<BookCubit, BookState>(
+      builder: (context, state) {
+        final bookCubit = context.watch<BookCubit>();
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (state is BookLoading)
+              Visibility(
+                visible: state.progress != 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: LinearProgressIndicator(
+                        value: state.progress / 100,
+                        minHeight: 8,
+                        backgroundColor: Colors.grey[300],
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "${state.progress.toStringAsFixed(2)}%",
+                    ),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      iconSize: 20,
+                      icon: Icon(
+                        bookCubit.isPaused ? Icons.play_arrow : Icons.pause,
+                      ),
+                      onPressed: () {
+                        bookCubit.togglePause();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            if (state is BookPaused)
+              Text(bookCubit.isPaused ? "Pausando..." : "Reanudando...",
+                  style: const TextStyle(color: AppColors.neutral100)),
+            if (state is BookError)
+              Text("Error: ${state.message}",
+                  style: const TextStyle(color: Colors.red)),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _bookLibrary(BuildContext context) {
+    return Consumer<BookProvider>(
+      builder: (context, bookProvider, child) {
+        if (!bookProvider.isInitialized) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        List<BookLocalModel> books = bookProvider.books;
+        if (books.isEmpty) {
+          return Center(child: Text(L10n.of(context).noBooks));
+        }
+        return Expanded(
+          child: GridView.builder(
+            controller: _scrollController,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              childAspectRatio: MediaQuery.of(context).size.width /
+                  (MediaQuery.of(context).size.height / 1),
+            ),
+            itemCount: books.length,
+            itemBuilder: (context, index) {
+              final book = books[index];
+              return Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxHeight: 200,
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: book.getCoverBook(),
+                          placeholder: (context, url) => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                          fit: BoxFit.scaleDown,
+                        ),
+                      ),
+                      Text(
+                        book.title ?? "",
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      DefaultButton(
+                          text: L10n.of(context).seeMore,
+                          onPressed: () {
+                            AutoRouter.of(context).push(
+                              DetailsRoute(identificator: book.id!),
+                            );
+                          })
+                    ],
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 8,
+                    child: IconButton(
+                      onPressed: () async {
+                        await bookProvider.deleteBook(book);
+                      },
+                      icon: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          color: AppColors.neutral100,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
