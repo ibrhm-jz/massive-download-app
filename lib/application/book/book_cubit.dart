@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_exam/application/book/book_state.dart';
+import 'package:flutter_exam/core/storage/session_storage.dart';
 import 'package:flutter_exam/data/models/api_models/book_response_model.dart';
 import 'package:flutter_exam/data/models/books/book_local_model.dart';
 import 'package:flutter_exam/domain/interfaces/i_book_repository.dart';
 import 'package:flutter_exam/presentation/providers/book_provider.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class BookCubit extends Cubit<BookState> {
   final IBookRepository _bookRepository;
@@ -19,12 +21,19 @@ class BookCubit extends Cubit<BookState> {
         super(BookInitial());
 
   Future<void> getBooksFromAPIAsync() async {
-    emit(BookLoading(0));
+    totalBooks = int.parse(_bookProvider.maxDownloadCountCtrl.text);
+    int insertedBooksCount = await SessionStorage.getInsertedBookCount();
+    int lastPage = await SessionStorage.getLastDownloadedPage();
+    bool downloadComplete = await SessionStorage.getDownloadComplete();
+    if (downloadComplete) {
+      emit(BookSuccess("Descarga ya completada previamente."));
+      return;
+    }
+    emit(BookLoading((insertedBooksCount / totalBooks * 100).toDouble()));
     try {
       List<BookResponseModel> allBooks = [];
-      int page = 1;
+      int page = lastPage;
       int insertedBooksCount = 0;
-
       do {
         final result =
             await _bookRepository.getBooks(q: 'b', page: page, limit: limit);
@@ -33,8 +42,6 @@ class BookCubit extends Cubit<BookState> {
             emit(BookError(l.message.toString()));
           },
           (r) async {
-            // await _bookProvider.insertBook( BookLocalModel(authorKey: [], authorName: ["Ibraham"], ia: [], language: ["mx"],
-            // title: "Mi librito"));
             if (insertedBooksCount + r.length <= totalBooks) {
               final booksToStore = r
                   .map((book) => BookLocalModel(
@@ -76,15 +83,12 @@ class BookCubit extends Cubit<BookState> {
                       iaCollectionS: book.iaCollectionS,
                       key: book.key,
                       lendingEditionS: book.lendingEditionS,
-                      lendingIdentifierS: book.lendingIdentifierS
-                      
-                      ))
+                      lendingIdentifierS: book.lendingIdentifierS))
                   .toList();
               await _bookProvider.insertBooks(booksToStore);
-
               insertedBooksCount += booksToStore.length;
               allBooks.addAll(listRemaining);
-
+              await SessionStorage.saveProgress(insertedBooksCount, page);
               emit(BookLoading(
                   (insertedBooksCount / totalBooks * 100).toDouble()));
               return;
@@ -93,6 +97,8 @@ class BookCubit extends Cubit<BookState> {
         );
         page++;
       } while (allBooks.length < totalBooks);
+      await SessionStorage.saveComplete(true);
+      emit(BookSuccess("Descarga ya completada con."));
     } catch (e) {
       emit(BookError("Error al obtener los libros"));
     }

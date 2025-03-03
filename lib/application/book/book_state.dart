@@ -30,6 +30,7 @@ import 'package:equatable/equatable.dart';
 abstract class BookState extends Equatable {}
 
 class BookInitial extends BookState {
+  @override
   List<Object> get props => [];
 }
 
@@ -41,16 +42,16 @@ class BookLoading extends BookState {
   List<Object> get props => [progress];
 }
 
-class BookLoaded extends BookState {
-  final List<dynamic> books;
-  BookLoaded(this.books);
-  @override
-  List<Object> get props => [books];
-}
-
 class BookError extends BookState {
   final String message;
   BookError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+class BookSuccess extends BookState {
+  final String message;
+  BookSuccess(this.message);
 
   @override
   List<Object> get props => [message];

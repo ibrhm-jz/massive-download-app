@@ -35,7 +35,10 @@ class BookLocalModel {
     this.lendingIdentifierS,
     this.title,
   });
-    String getAuthorProfile() {
-    return "https://covers.openlibrary.org/b/id/${coverI}-L.jpg";
+  String getCoverBook() {
+    return "https://covers.openlibrary.org/b/id/$coverI-L.jpg";
+  }
+  String getAuthorProfileBook(String author) {
+    return "https://covers.openlibrary.org/a/olid/$author-M.jpg";
   }
 }

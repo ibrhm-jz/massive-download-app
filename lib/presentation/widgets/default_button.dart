@@ -60,7 +60,7 @@ class DefaultButton extends StatelessWidget {
       elevation = 0;
     }
     if (type == DefaultButtonType.analogus) {
-      textColor = AppColors.getColor(context, AppColorType.mainBackground);
+     textColor = AppColors.neutral100;
       backgroundColor = AppColors.getColor(context, AppColorType.alert);
       elevation = 0;
     }

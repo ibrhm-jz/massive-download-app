@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class BookResponseModel {
   BookResponseModel({
     required this.authorKey,
@@ -53,5 +55,8 @@ class BookResponseModel {
       lendingIdentifierS: json["lending_identifier_s"],
       title: json["title"],
     );
+  }
+     String generateUUID() {
+    return const Uuid().v4();
   }
 }

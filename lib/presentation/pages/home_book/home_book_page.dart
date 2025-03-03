@@ -4,19 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_exam/application/book/book_cubit.dart';
 import 'package:flutter_exam/config/injection.dart';
 import 'package:flutter_exam/domain/interfaces/i_book_repository.dart';
-import 'package:flutter_exam/presentation/pages/download/screens/download_screen.dart';
+import 'package:flutter_exam/presentation/pages/home_book/screens/home_book_screen.dart';
 import 'package:flutter_exam/presentation/providers/book_provider.dart';
 import 'package:flutter_exam/presentation/utils/responsive_layout.dart';
 
 @RoutePage()
-class DownloadPage extends StatefulWidget {
-  const DownloadPage({super.key});
+class HomeBookPage extends StatefulWidget {
+  const HomeBookPage({super.key});
 
   @override
-  State<DownloadPage> createState() => _DownloadPageState();
+  State<HomeBookPage> createState() => _HomeBookPageState();
 }
 
-class _DownloadPageState extends State<DownloadPage> {
+class _HomeBookPageState extends State<HomeBookPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
@@ -24,8 +24,8 @@ class _DownloadPageState extends State<DownloadPage> {
         create: (context) => BookCubit(
           bookRepository: getIt<IBookRepository>(),
           bookProvider: context.read<BookProvider>(),
-        ),
-        child: const DownloadScreen(),
+        )..getBooksFromAPIAsync(),
+        child: const HomeBookScreen(),
       ),
     );
   }

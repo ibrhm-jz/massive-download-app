@@ -6,5 +6,20 @@
   "share": "Share",
   "operationFailureMessage":"Sorry, an error occurred.",
   "deleteButton": "Delete",
-  "rename": "Rename"
+  "rename": "Rename",
+  "welcome": "Welcome, find a lot of information about your favorite books",
+  "numberOfBooks" : "Number of books to download",
+  "infoLibrary":"Library Information",
+  "doYouWantDelete":"Do you want to delete the logs?",
+  "deleteRecords" :"Delete records",
+  "downloadProgress": "Downloading...",
+  "downloadComplete" : "Download completed successfully",
+  "error" :"Error",
+  "noBooks" :"There are no books saved.",
+  "seeMore" :"See more",
+  "noData":"No data found",
+  "title":"Title",
+  "firstYearPublication":"First year of publication",
+  "editionNumber":"Edition No.",
+  "author":"Author/Authors"
 }

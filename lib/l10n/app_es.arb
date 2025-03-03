@@ -6,5 +6,20 @@
   "share": "Compartir",
   "operationFailureMessage":"Lo sentimos, ocurrió un error.",
   "deleteButton": "Eliminar",
-  "rename": "Renombrar"
+  "rename": "Renombrar",
+  "welcome" : "Bienvenido, encuentra mucha informacion sobre tus Libros favoritos",
+  "numberOfBooks" : "Numero de libros a descargar",
+  "infoLibrary":"Informacion Bibliotecaria",
+  "doYouWantDelete":"¿Desea eliminar los registros?",
+  "deleteRecords" :"Borrar registros",
+  "downloadProgress": "Descargando...",
+  "downloadComplete" : "Descarga completada con éxito",
+  "error" :"Error",
+  "noBooks" :"No hay libros guardados.",
+  "seeMore" :"Ver mas",
+  "noData":"No se encotraron datos",
+  "title":"Titulo",
+  "firstYearPublication":"Primer Año de publicacion",
+  "editionNumber":"Edición No.",
+  "author":"Autor/Autores"
 }

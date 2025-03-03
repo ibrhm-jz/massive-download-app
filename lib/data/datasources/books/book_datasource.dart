@@ -20,4 +20,10 @@ abstract class BookDataSource {
 
   @delete
   Future<int> deleteBook(BookLocalModel book);
+
+  @Query('DELETE FROM books')
+  Future<void> clearBooks();
+
+  @Query('SELECT * FROM books ORDER BY title ASC LIMIT :limit OFFSET :offset')
+  Future<List<BookLocalModel>> getBooksPaginated(int limit, int offset);
 }
