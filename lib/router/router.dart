@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_exam/router/router.gr.dart';
 
-
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
   @override
@@ -9,8 +8,11 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           page: WelcomeRoute.page,
           path: '/Welcome',
+        ),
+        AutoRoute(
+          page: DownloadRoute.page,
+          path: '/Download',
           initial: true,
         ),
-      
       ];
 }

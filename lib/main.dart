@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_exam/config/database.dart';
 import 'package:flutter_exam/config/injection.dart';
-import 'package:flutter_exam/data/models/books/book_local_model.dart';
 import 'package:flutter_exam/presentation/providers/book_provider.dart';
 import 'package:flutter_exam/router/router.dart';
 import 'package:flutter_exam/theme/app_theme.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -26,12 +24,15 @@ void main() async {
   // for (var p in people) {
   //   print("ID: ${p.id}, Name: ${p.author}, Age: ${p.title}");
   // }
-  runApp(MyApp());
+  runApp(MyApp(
+   
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  MyApp({super.key, });
   final appRouter = AppRouter();
+  //final BookDataSource dao;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => BookProvider()),
+            ChangeNotifierProvider(create: (_) => getIt<BookProvider>()),
         ],
         builder: (context, _) {
           return MaterialApp.router(

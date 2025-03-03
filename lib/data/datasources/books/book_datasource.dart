@@ -6,10 +6,10 @@ abstract class BookDataSource {
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertBooks(List<BookLocalModel> books);
 
-  @Query('SELECT * FROM BookLocalModel ORDER BY title ASC')
+  @Query('SELECT * FROM books  ORDER BY title ASC')
   Future<List<BookLocalModel>> getAllBooks();
 
-  @Query('SELECT * FROM BookLocalModel WHERE id = :id')
+  @Query('SELECT * FROM books  WHERE id = :id')
   Future<BookLocalModel?> getBookById(int id);
 
   @insert

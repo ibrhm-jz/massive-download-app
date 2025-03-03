@@ -128,11 +128,10 @@ class HttpClient {
   }) async {
     final url = Uri.parse(Enviroments.apiUrl + endpoint)
         .replace(queryParameters: params);
+
     final response = await http.get(
       url,
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: {'Content-Type': 'application/json'},
     );
     if (Enviroments.isDebug) {
       final Logger logger = Logger();
@@ -160,5 +159,4 @@ class HttpClient {
       return Uri.https(baseUri.host, path, params);
     }
   }
-
 }
