@@ -11,7 +11,7 @@ class BookProvider extends ChangeNotifier {
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
   TextEditingController maxDownloadCountCtrl =
-      TextEditingController(text: '1000');
+      TextEditingController(text: '10000');
 
   List<BookLocalModel> _books = [];
   List<BookLocalModel> get books => _books;
